@@ -1,0 +1,19 @@
+{
+  "name": "commitgenerator",
+  "version": "1.0.0",
+  "description": "Commit Generator To Simulate Large Git Repos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimender2/CommitGenerator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jimender2/CommitGenerator/issues"
+  },
+  "homepage": "https://github.com/jimender2/CommitGenerator#readme"
+}
