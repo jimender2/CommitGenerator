@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jimender2/CommitGenerator/issues"
   },
-  "homepage": "https://github.com/jimender2/CommitGenerator#readme"
+  "homepage": "https://github.com/jimender2/CommitGenerator#readme",
+  "dependencies": {
+    "simple-git": "^3.10.0"
+  }
 }
