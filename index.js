@@ -6,8 +6,6 @@ const path = require("path")
 
 const argv = require('minimist')(process.argv.slice(2));
 
-console.log(argv);
-
 function generateRandomPost() {
     return {
         title: faker.lorem.words(5),
