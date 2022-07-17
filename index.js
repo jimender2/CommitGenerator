@@ -3,6 +3,8 @@ const mkdirp = require('mkdirp');
 const fs = require('fs');
 const faker = require("faker");
 const path = require("path")
+const cliProgress = require('cli-progress');
+
 
 const argv = require('minimist')(process.argv.slice(2));
 
@@ -34,6 +36,13 @@ async function asyncCall(argv) {
         await git.init();
     }
 
+
+    console.log("Generating commits...");
+
+    const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
+    bar.start(numberOfCommits, 0);
+
     for (let i = 0; i < numberOfCommits; i++) {
         const post = generateRandomPost()
         const filePath = path.join(postsDir, `${post.title}.md`);
@@ -44,7 +53,11 @@ async function asyncCall(argv) {
 
         await git.commit(`Added ${post.title}`);
 
+        bar.increment();
     }
+
+    bar.stop();
+
 }
 
 asyncCall(argv)
