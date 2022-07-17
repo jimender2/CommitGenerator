@@ -50,14 +50,37 @@ async function asyncCall(argv) {
         let postTitles = "";
         // Generate multiple posts
         for (let j = 0; j < Math.floor(Math.random() * maxFilesPerCommit); j++) {
-            const post = generateRandomPost()
-            const filePath = path.join(postsDir, `${post.title}.md`);
 
-            postTitles += `* ${post.title}\n`;
+            // Edit a post or create a new one
+            let type = Math.floor(Math.random() * 2);
 
-            fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+            if (type === 0) {
+                const post = generateRandomPost();
+                const filePath = path.join(postsDir, `${post.title}.md`);
 
-            await git.add(filePath);
+                postTitles += `* ${post.title}\n`;
+
+                fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+
+                await git.add(filePath);
+            } else {
+                const post = generateRandomPost();
+
+                let files = fs.readdirSync(postsDir);
+                let chosenFile = files[Math.floor(Math.random() * files.length)];
+
+                post.title = chosenFile.split(".")[0];
+
+                const filePath = path.join(postsDir, `${post.title}.md`);
+
+                postTitles += `* ${post.title}\n`;
+
+                fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+
+                await git.add(filePath);
+
+            }
+
         }
 
         await git.commit(`Added ${postTitles}`);
