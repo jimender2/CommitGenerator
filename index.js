@@ -4,11 +4,9 @@ const fs = require('fs');
 const faker = require("faker");
 const path = require("path")
 
+const argv = require('minimist')(process.argv.slice(2));
 
-
-// var argv = require('minimist')(process.argv.slice(2));
-
-// console.log(argv);
+console.log(argv);
 
 function generateRandomPost() {
     return {
@@ -20,9 +18,13 @@ function generateRandomPost() {
 }
 
 
-async function asyncCall() {
+async function asyncCall(argv) {
 
-    repoPath = "path"
+    let repoPath = ("path" in argv === true) ? argv["path"] : "path"
+
+    let numberOfCommits = ("commits" in argv === true) ? Number(argv["commits"]) : 100
+
+    let initRepo = ("init" in argv === true) ? argv["init"] : false
 
     const postsDir = path.join(__dirname, repoPath)
 
@@ -30,9 +32,11 @@ async function asyncCall() {
 
     const git = simpleGit(repoPath);
 
-    await git.init();
+    if (initRepo) {
+        await git.init();
+    }
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < numberOfCommits; i++) {
         const post = generateRandomPost()
         const filePath = path.join(postsDir, `${post.title}.md`);
 
@@ -45,4 +49,4 @@ async function asyncCall() {
     }
 }
 
-asyncCall()
+asyncCall(argv)
