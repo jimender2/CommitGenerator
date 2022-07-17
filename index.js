@@ -26,6 +26,8 @@ async function asyncCall(argv) {
 
     let initRepo = ("init" in argv === true) ? argv["init"] : false
 
+    let maxFilesPerCommit = ("maxFilesPerCommit" in argv === true) ? Number(argv["maxFilesPerCommit"]) : 100
+
     const postsDir = path.join(__dirname, repoPath)
 
     mkdirp.sync(repoPath);
@@ -44,14 +46,21 @@ async function asyncCall(argv) {
     bar.start(numberOfCommits, 0);
 
     for (let i = 0; i < numberOfCommits; i++) {
-        const post = generateRandomPost()
-        const filePath = path.join(postsDir, `${post.title}.md`);
 
-        fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+        let postTitles = ""
+        // Generate multiple posts
+        for (let j = 0; j < Math.floor(Math.random() * maxFilesPerCommit); j++) {
+            const post = generateRandomPost()
+            const filePath = path.join(postsDir, `${post.title}.md`);
 
-        await git.add(filePath);
+            postTitles += `* ${post.title}\n`
 
-        await git.commit(`Added ${post.title}`);
+            fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+
+            await git.add(filePath);
+        }
+
+        await git.commit(`Added ${postTitles}`);
 
         bar.increment();
     }
