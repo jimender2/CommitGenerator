@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/jimender2/CommitGenerator#readme",
   "dependencies": {
+    "faker": "^5.5.3",
+    "minimist": "^1.2.6",
+    "mkdirp": "^1.0.4",
     "simple-git": "^3.10.0"
   }
 }
