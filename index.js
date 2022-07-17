@@ -49,19 +49,23 @@ async function asyncCall(argv) {
 
         let addPostTitles = "";
         let editPostTitles = "";
+        let deletePostTitles = "";
+
+        let writeFile = true;
         // Generate multiple posts
         for (let j = 0; j < Math.floor(Math.random() * maxFilesPerCommit); j++) {
 
             const post = generateRandomPost();
 
             // Edit a post or create a new one
-            let type = Math.floor(Math.random() * 2);
+            let type = Math.floor(Math.random() * 3);
 
             if (type === 0) {
 
                 addPostTitles += `* ${post.title}\n`;
 
-            } else {
+                writeFile = true;
+            } else if (type === 1) {
 
                 let files = fs.readdirSync(postsDir);
                 let chosenFile = files[Math.floor(Math.random() * files.length)];
@@ -70,17 +74,35 @@ async function asyncCall(argv) {
 
                 editPostTitles += `* ${post.title}\n`;
 
+                writeFile = true;
+            } else {
+
+                let files = fs.readdirSync(postsDir);
+                let chosenFile = files[Math.floor(Math.random() * files.length)];
+
+                post.title = chosenFile.split(".")[0];
+
+                deletePostTitles += `* ${post.title}\n`;
+
+                writeFile = false;
             }
 
             const filePath = path.join(postsDir, `${post.title}.md`);
 
-            fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+            try {
+                if (writeFile) {
+                    fs.writeFileSync(filePath, `---\ntitle: ${post.title}\nauthor: ${post.author}\ndate: ${post.date}\n---\n${post.body}`);
+                } else {
+                    fs.unlinkSync(filePath);
+                }
 
-            await git.add(filePath);
+                await git.add(filePath);
 
+            } catch (e) {
+            }
         }
 
-        await git.commit(`Added ${addPostTitles}` + "\n" + `Edited ${editPostTitles}`);
+        await git.commit(`Added ${addPostTitles}` + "\n" + `Edited ${editPostTitles}` + "\n" + `Deleted ${deletePostTitles}`);
 
         bar.increment();
     }
