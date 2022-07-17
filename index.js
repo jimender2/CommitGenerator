@@ -102,7 +102,11 @@ async function asyncCall(argv) {
             }
         }
 
-        await git.commit(`Added ${addPostTitles}` + "\n" + `Edited ${editPostTitles}` + "\n" + `Deleted ${deletePostTitles}`);
+        let commitMsg = (addPostTitles !== "") ? `Added ${addPostTitles}\n` : "";
+        commitMsg += (editPostTitles !== "") ? `Edited ${editPostTitles}\n` : "";
+        commitMsg += (deletePostTitles !== "") ? `Deleted ${deletePostTitles}\n` : "";
+
+        await git.commit(commitMsg);
 
         bar.increment();
     }
